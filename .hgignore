@@ -1,3 +1,6 @@
 syntax: glob
 .gradle
 build
+.classpath
+.project
+.settings
