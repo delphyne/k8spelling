@@ -3,9 +3,13 @@ apply(plugin:'eclipse')
 
 repositories {
     mavenCentral()
+    mavenRepo(name:"EclipseLink", urls:["http://download.eclipse.org/rt/eclipselink/maven.repo"])
 }
 
 dependencies {
     groovy('org.codehaus.groovy:groovy:1.8.0')
+    compile('org.eclipse.persistence:eclipselink:2.2.0')
+    compile('org.eclipse.persistence:javax.persistence:2.0.3')
+    compile('hsqldb:hsqldb:1.8.0.10')
     testCompile('junit:junit:4.8.2')
 }
