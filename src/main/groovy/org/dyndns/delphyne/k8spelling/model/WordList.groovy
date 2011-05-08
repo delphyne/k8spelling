@@ -6,10 +6,12 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity
-class Student {
+class WordList {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     long id
     
     String name
+    
+    List<Word> words
 }

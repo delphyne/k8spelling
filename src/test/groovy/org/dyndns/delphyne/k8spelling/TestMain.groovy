@@ -13,18 +13,20 @@ class TestMain {
         
         def factory = Persistence.createEntityManagerFactory("default")
         def em = factory.createEntityManager()
-        
-        def student = new Student(name: "Brian")
-        em.getTransaction().begin()
-        em.persist(student)
-        em.getTransaction().commit()
-        
-        Query q = em.createQuery("select s from Student s")
-        q.resultList.each {
-            println it.dump()
-        }
-        
+
+//        em.getTransaction().begin()
+//        ["Brian", "Kate", "Sam"].each {
+//            em.persist(new Student(name: it))
+//            em.flush()
+//        }
+//        em.getTransaction().commit()
+//        
+//        Query q = em.createQuery("select s from Student s")
+//        q.resultList.each {
+//            println it.dump()
+//        }
+
         em.close()
-        Thread.sleep(1000)
+        factory.close()
     }
 }
