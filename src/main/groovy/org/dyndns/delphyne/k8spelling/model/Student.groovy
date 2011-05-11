@@ -12,4 +12,6 @@ class Student {
     long id
     
     String name
+    
+    boolean active
 }
