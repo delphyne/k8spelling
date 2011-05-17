@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:gorm="http://grails.org/schema/gorm"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd
+        http://grails.org/schema/gorm http://grails.org/schema/gorm/gorm.xsd">
+
+    <bean
+        id="dataSource"
+        class="org.apache.commons.dbcp.BasicDataSource">
+        <property
+            name="url"
+            value="jdbc:h2:mem:k8spelling" />
+        <property
+            name="username"
+            value="sa" />
+        <property
+            name="password"
+            value="" />
+        <property
+            name="driverClassName"
+            value="org.h2.Driver" />
+    </bean>
+
+    <bean
+        id="messageSource"
+        class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property
+            name="basename"
+            value="messages" />
+    </bean>
+
+    <gorm:sessionFactory
+        base-package="org.dyndns.delphyne.k8spelling.model"
+        data-source-ref="dataSource"
+        message-source-ref="messageSource">
+        <property
+            name="hibernateProperties">
+            <util:map>
+                <entry
+                    key="hibernate.hbm2ddl.auto"
+                    value="create-drop" />
+                <entry
+                    key="hibernate.show_sql"
+                    value="true" />
+                <entry
+                    key="hibernate.format_sql"
+                    value="true" />
+                <entry
+                    key="hibernate.use_sql_comments"
+                    value="true" />
+            </util:map>
+        </property>
+    </gorm:sessionFactory>
+</beans>

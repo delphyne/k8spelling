@@ -1,17 +1,29 @@
 package org.dyndns.delphyne.k8spelling.model
 
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
+import grails.persistence.Entity
 
 @Entity
 class WordList {
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    long id
-    
     String name
+    List words
     
-    List<Word> words
+    static hasMany = [words:Word]
+    
+    static mapping = {
+        words(lazy:false)
+    }
+    
+    static constraints = {
+        name(unique:true)
+    }
+    
+    static transients = ["default"]
+    
+    List<Word> getDefault() {
+        Word.list(sort:"id", order:"asc")
+    }
+    
+    String toString() {
+        "$name: $words"
+    }
 }

@@ -1,7 +1,12 @@
 package org.dyndns.delphyne.k8spelling.model
 
+import org.dyndns.delphyne.k8spelling.Config
+import org.junit.BeforeClass
+import org.junit.Test
+
+
 class WordTest {
-    def words = [
+    static List words = [
             "because",
             "of",
             "there",
@@ -23,4 +28,23 @@ class WordTest {
             "some",
             "come"
         ]
+    
+    static Config config
+    
+    @BeforeClass
+    static void classSetup() {
+        config = new Config("test")
+        Word.withTransaction {
+            words.each {
+                new Word(word:it).save()
+            }
+        }
+    }
+    
+    @Test
+    void testAllWordsExist() {
+        words.each {
+            assert it == Word.findByWord(it).toString()
+        }
+    }
 }
