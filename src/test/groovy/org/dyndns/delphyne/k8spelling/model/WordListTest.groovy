@@ -40,13 +40,10 @@ class WordListTest extends TestBase {
         }
         assert WordList.findByName("myTest").words.find { it -> it.word == "one" }
         
-        WordList wl
         WordList.withTransaction {
-            wl = WordList.findByName("myTest")
-            wl.words.remove(Word.findByWord("one"))
-            wl.save()
+            WordList.findByName("myTest").removeFromWords(Word.findByWord("one")).save()
         }
-        
+                
         assert !WordList.findByName("myTest").words.find { it -> it.word == "one" }
     }
 }
