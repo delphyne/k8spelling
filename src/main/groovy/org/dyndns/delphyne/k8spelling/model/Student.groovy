@@ -5,10 +5,10 @@ import grails.persistence.Entity
 @Entity
 class Student {
     String name
-    boolean active
+    Boolean active
     
     static constraints = {
-        name(unique:true)
+        name(unique:true, validator:{ val, obj -> val.trim().size() > 0 })
     }
     
     String toString() {

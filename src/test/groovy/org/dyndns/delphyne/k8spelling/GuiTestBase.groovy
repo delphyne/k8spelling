@@ -6,20 +6,26 @@ import java.awt.Component
 
 import javax.swing.JFrame
 
+import org.junit.BeforeClass
+import org.uispec4j.UISpec4J
+
 class GuiTestBase extends TestBase {
-    static SwingBuilder sb = new SwingBuilder()
-    
-    static void buildGui(List<Component> widgets) {
-        sb.edt {
-            frame(title:'test', size:[640,480], show:true, defaultCloseOperation:JFrame.DISPOSE_ON_CLOSE) {
-                widgets.each {
-                    widget(it)
-                }
+    static SwingBuilder swing = new SwingBuilder()
+
+    @BeforeClass
+    static void guiTestBaseClassSetup() {
+        UISpec4J.init()
+    }
+        
+    void buildGui(List<Component> widgets) {
+        swing.edt {
+            frame(title:this.class.simpleName, pack:true, show:true, defaultCloseOperation:JFrame.DISPOSE_ON_CLOSE) {
+                widgets.each { widget(it) }
             }
         }
     }
     
-    static void buildGui(Component widget) {
+    void buildGui(Component widget) {
         buildGui([widget])
     }
 }

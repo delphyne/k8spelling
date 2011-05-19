@@ -27,4 +27,5 @@ dependencies {
     compile('javax.servlet:servlet-api:2.5')
     
     testCompile('junit:junit:4.8.2')
+    testCompile('org.uispec4j:uispec4j:2.4')
 }
