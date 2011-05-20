@@ -4,10 +4,10 @@ import groovy.swing.SwingBuilder
 import groovy.util.logging.Slf4j
 
 import java.awt.BorderLayout
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
+import java.awt.Component
 
 import javax.swing.Action
+import javax.swing.JButton
 import javax.swing.JPanel
 import javax.swing.JTable
 import javax.swing.JTextField
@@ -16,16 +16,17 @@ import javax.swing.table.AbstractTableModel
 import org.dyndns.delphyne.k8spelling.model.Student
 
 @Slf4j
-class StudentPanel {
+class StudentPanel implements GuiPanel {
     JPanel widget
     JTable studentTable
     JTextField inputField
+    JButton defaultButton
     Action addStudentAction
     
     StudentPanel() {
-        SwingBuilder sb = new SwingBuilder()
+        SwingBuilder swing = new SwingBuilder()
         
-        addStudentAction = sb.action(name:"Add Student", 
+        addStudentAction = swing.action(name:"Add Student", 
                 defaultButton:true, 
                 mnemonic:"A", 
                 closure:{
@@ -43,7 +44,7 @@ class StudentPanel {
                     }
             })
         
-        widget = sb.panel {
+        widget = swing.panel {
             borderLayout()
             scrollPane(constraints:BorderLayout.CENTER) {
                 studentTable = table(model:new StudentTableModel(), autoCreateRowSorter:true, showGrid:true)
@@ -52,11 +53,15 @@ class StudentPanel {
                 borderLayout()
                 inputField = textField(constraints:BorderLayout.CENTER, action:addStudentAction)
                 label(constraints:BorderLayout.WEST, labelFor:inputField, text:"New Student:", displayedMnemonic:"S")
-                button(constraints:BorderLayout.EAST, action:addStudentAction)
+                defaultButton = button(constraints:BorderLayout.EAST, action:addStudentAction)
             }
         }
         
         inputField.requestFocusInWindow()
+    }
+    
+    Component getDefaultFocus() {
+        inputField
     }
 }
 

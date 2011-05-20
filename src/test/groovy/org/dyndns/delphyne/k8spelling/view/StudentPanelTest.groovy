@@ -34,6 +34,6 @@ class StudentPanelTest extends GuiTestBase {
     }
     
     public static void main(String[] args) {
-        new StudentPanelTest().buildGui(new StudentPanel().widget)
+        new StudentPanelTest().buildGui(new StudentPanel())
     }
 }
