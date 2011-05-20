@@ -19,11 +19,11 @@ class WordList {
     
     static transients = ["default"]
     
-    List<Word> getDefault() {
-        Word.list(sort:"id", order:"asc")
+    static WordList getDefault() {
+        new WordList(name:"Default", words:Word.list(sort:"id", order:"asc"))
     }
     
     String toString() {
-        "$name: $words"
+        name
     }
 }
