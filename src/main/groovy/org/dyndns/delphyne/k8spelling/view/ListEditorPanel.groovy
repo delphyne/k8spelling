@@ -16,22 +16,27 @@ import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JSplitPane
 
-import org.dyndns.delphyne.k8spelling.model.Word
-import org.dyndns.delphyne.k8spelling.model.WordList
+import org.dyndns.delphyne.k8spelling.model.ListOfAtoms
 
 @Slf4j
-class WordListPanel implements GuiPanel {
+class ListEditorPanel implements GuiPanel {
     JPanel widget
-    JButton defaultButton
     Component defaultFocus
+    JButton defaultButton
 
     private JComboBox listSelection
     private JList left
     private JList right
 
+    private Class singleType
+    private Class listType
+
     private SwingBuilder swing
 
-    WordListPanel() {
+    ListEditorPanel(Class singleType, Class listType, StatusPanel status) {
+        this.singleType = singleType
+        this.listType = listType
+
         swing = new SwingBuilder()
 
         JOptionPane nameInput = new JOptionPane(
@@ -47,7 +52,7 @@ class WordListPanel implements GuiPanel {
                 listSelection = comboBox(
                                                 constraints: BorderLayout.CENTER,
                                                 action: action(closure:{ ActionEvent event -> updateLists() }),
-                                                model: new DefaultComboBoxModel(WordList.list() as Object[])
+                                                model: new DefaultComboBoxModel(listType.list() as Object[])
                                                 )
                 button(
                                                 constraints: BorderLayout.EAST,
@@ -58,13 +63,17 @@ class WordListPanel implements GuiPanel {
                                                                                     "Enter a name for the new list:",
                                                                                     "New List")
                                                     if (newName) {
-                                                        WordList newList
-                                                        WordList.withTransaction {
-                                                            newList = new WordList(name: newName, words: []).save()
+                                                        def newList
+                                                        listType.withTransaction {
+                                                            newList = listType.newInstance()
+                                                            newList.name = newName
+                                                            newList.items = []
+                                                            newList.save()
                                                         }
                                                         listSelection.model << newList
                                                         listSelection.model.selectedItem = newList
                                                     }
+                                                    status.message = "Created new ${listType.simpleName}, 'newName'"
                                                 })
                                                 )
             }
@@ -82,38 +91,44 @@ class WordListPanel implements GuiPanel {
                 }
                 panel(constraints: BorderLayout.SOUTH) {
                     button(action(name: ">>", closure: {
-                        def wl = listSelection.model.selectedItem
-                        WordList.withTransaction { wl.words = []}
+                        def l = listSelection.model.selectedItem
+                        listType.withTransaction { 
+                            l.items = []
+                            l.save() 
+                        }
                         updateLists()
                     })
                     )
                     button(action(name: ">", closure: {
-                        def wl = listSelection.model.selectedItem
+                        def l = listSelection.model.selectedItem
                         def toBeRemoved = left.selectedValues
-                        WordList.withTransaction {
-                            wl.words = wl.words - toBeRemoved
-                            wl.save()
+                        log.trace "original: ${l.items.inject("") { acc,i -> acc + i.dump()}}"
+                        log.trace "toberemoved: ${toBeRemoved.inject("") { acc, i -> acc + i.dump()}}"
+                        log.trace "diff: ${l.items - toBeRemoved}"
+                        listType.withTransaction {
+                            l.items = l.items - toBeRemoved
+                            l.save()
                         }
                         updateLists()
                     }))
                     button(action(name: "<", closure: {
-                        def wl = listSelection.model.selectedItem
-                        def jumpToIndex = wl.words.size()
+                        def l = listSelection.model.selectedItem
+                        def jumpToIndex = l.items.size()
                         def toBeAdded = right.selectedValues
-                        WordList.withTransaction {
-                            wl.words.addAll(toBeAdded)
-                            wl.save()
+                        listType.withTransaction {
+                            l.items.addAll(toBeAdded)
+                            l.save()
                         }
                         updateLists()
                         left.ensureIndexIsVisible(jumpToIndex)
                     }))
                     button(action(name: "<<", closure: {
-                        def wl = listSelection.model.selectedItem
-                        def jumpToIndex = wl.words.size()
-                        def toBeAdded = WordList.default.words - wl.words
-                        WordList.withTransaction {
-                            wl.words.addAll(toBeAdded)
-                            wl.save()
+                        def l = listSelection.model.selectedItem
+                        def jumpToIndex = l.items.size()
+                        def toBeAdded = listType.default.items - l.items
+                        listType.withTransaction {
+                            l.items.addAll(toBeAdded)
+                            l.save()
                         }
                         updateLists()
                         left.ensureIndexIsVisible(jumpToIndex)
@@ -122,28 +137,29 @@ class WordListPanel implements GuiPanel {
             }
             panel(constraints: BorderLayout.SOUTH, border: emptyBorder(3)) {
                 borderLayout()
-                Action addWord = action(name: "Add Word",
+                Action addItem = action(name: "Add ${singleType.simpleName}".toString(),
                                                 mnemonic: "A",
                                                 closure: {
-                                                    def wl = listSelection.model.selectedItem
-                                                    def jumpToIndex = wl.words.size()
-                                                    Word.withTransaction {
-                                                        Word newWord = new Word(word: defaultFocus.text)
-                                                        log.debug "Adding '$newWord' to Word"
+                                                    def l = listSelection.model.selectedItem
+                                                    def jumpToIndex = l.items.size()
+                                                    singleType.withTransaction {
+                                                        def newItem = singleType.newInstance()
+                                                        newItem.data = defaultFocus.text
+                                                        log.debug "Adding '$newItem' to ${singleType.simpleName}"
                                                         try {
-                                                            newWord.save()
+                                                            newItem.save()
                                                         } catch (Exception e) {
-                                                            log.error "Failed to persist $newWord", e
+                                                            log.error "Failed to persist $newItem", e
                                                         }
-                                                        wl.addToWords(newWord)
+                                                        l.addToItems(newItem)
                                                     }
                                                     updateLists()
                                                     left.ensureIndexIsVisible(jumpToIndex)
                                                     defaultFocus.selectAll()
                                                 })
-                defaultFocus = textField(constraints: BorderLayout.CENTER, action: addWord)
-                label(constraints: BorderLayout.WEST, text: "New word:", labelFor: defaultFocus, displayedMnemonic: "W")
-                defaultButton = button(constraints: BorderLayout.EAST, action: addWord)
+                defaultFocus = textField(constraints: BorderLayout.CENTER, action: addItem)
+                label(constraints: BorderLayout.WEST, text: "New ${singleType.simpleName.toLowerCase()}:", labelFor: defaultFocus, displayedMnemonic: singleType.simpleName[0])
+                defaultButton = button(constraints: BorderLayout.EAST, action: addItem)
             }
         }
 
@@ -151,8 +167,8 @@ class WordListPanel implements GuiPanel {
     }
 
     void updateLists() {
-        def leftValues = listSelection.model.selectedItem.words
-        def allValues = WordList.default.words
+        def leftValues = listSelection.model.selectedItem.items
+        def allValues = listType.default.items
         def rightValues = allValues - leftValues
 
         left.listData = leftValues as Object[]

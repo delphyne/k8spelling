@@ -5,16 +5,16 @@ import groovy.transform.Canonical
 
 @Canonical
 @Entity
-class WordList implements ListOfAtoms {
+class StudentList implements ListOfAtoms {
     String name
     List items
     
-    static hasMany = [items: Word]
-    static mapping = { items(lazy: false) }
+    static hasMany = [items: Student]
     static transients = ["default"]
+    static mapping = { items(lazy: false) }
     
-    static WordList getDefault() {
-        new WordList(name: "Default", items: Word.list())
+    static StudentList getDefault() {
+        new StudentList(name: "Default", students: Student.list())
     }
     
     String toString() { name }

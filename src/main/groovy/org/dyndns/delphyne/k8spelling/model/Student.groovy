@@ -1,17 +1,11 @@
 package org.dyndns.delphyne.k8spelling.model
 
 import grails.persistence.Entity
+import groovy.transform.Canonical
 
+@Canonical
 @Entity
-class Student {
-    String name
-    Boolean active
-    
-    static constraints = {
-        name(unique:true, validator:{ val, obj -> val.trim().size() > 0 })
-    }
-    
-    String toString() {
-        "$name ($active)"
-    }
+class Student implements Atom {
+    String data
+    String toString() { data }
 }
