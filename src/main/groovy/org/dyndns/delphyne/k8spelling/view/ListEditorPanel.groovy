@@ -1,7 +1,6 @@
 package org.dyndns.delphyne.k8spelling.view
 
 import groovy.swing.SwingBuilder
-import groovy.util.logging.Slf4j
 
 import java.awt.BorderLayout
 import java.awt.Component
@@ -16,9 +15,6 @@ import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JSplitPane
 
-import org.dyndns.delphyne.k8spelling.model.ListOfAtoms
-
-@Slf4j
 class ListEditorPanel implements GuiPanel {
     JPanel widget
     Component defaultFocus
@@ -39,11 +35,7 @@ class ListEditorPanel implements GuiPanel {
 
         swing = new SwingBuilder()
 
-        JOptionPane nameInput = new JOptionPane(
-                                        null,
-                                        JOptionPane.QUESTION_MESSAGE,
-                                        JOptionPane.OK_CANCEL_OPTION
-                                        )
+        JOptionPane nameInput = new JOptionPane(null, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION)
 
         widget = swing.panel {
             borderLayout()
@@ -92,9 +84,9 @@ class ListEditorPanel implements GuiPanel {
                 panel(constraints: BorderLayout.SOUTH) {
                     button(action(name: ">>", closure: {
                         def l = listSelection.model.selectedItem
-                        listType.withTransaction { 
+                        listType.withTransaction {
                             l.items = []
-                            l.save() 
+                            l.save()
                         }
                         updateLists()
                     })
@@ -102,9 +94,6 @@ class ListEditorPanel implements GuiPanel {
                     button(action(name: ">", closure: {
                         def l = listSelection.model.selectedItem
                         def toBeRemoved = left.selectedValues
-                        log.trace "original: ${l.items.inject("") { acc,i -> acc + i.dump()}}"
-                        log.trace "toberemoved: ${toBeRemoved.inject("") { acc, i -> acc + i.dump()}}"
-                        log.trace "diff: ${l.items - toBeRemoved}"
                         listType.withTransaction {
                             l.items = l.items - toBeRemoved
                             l.save()
@@ -145,13 +134,14 @@ class ListEditorPanel implements GuiPanel {
                                                     singleType.withTransaction {
                                                         def newItem = singleType.newInstance()
                                                         newItem.data = defaultFocus.text
-                                                        log.debug "Adding '$newItem' to ${singleType.simpleName}"
                                                         try {
                                                             newItem.save()
+                                                            status.message = "Added '$newItem' to ${singleType.simpleName}"
                                                         } catch (Exception e) {
-                                                            log.error "Failed to persist $newItem", e
+                                                            status.message = "Failed to persist $newItem"
                                                         }
                                                         l.addToItems(newItem)
+                                                        l.save()
                                                     }
                                                     updateLists()
                                                     left.ensureIndexIsVisible(jumpToIndex)

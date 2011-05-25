@@ -14,7 +14,7 @@ class ListEditorPanelTest extends GuiTestBase {
         WordList.withTransaction {
             new WordList(name:"one").save()
             def wl = new WordList(name:"two")
-            def words = []
+            def words = [] as SortedSet
             5.times {
                 words << new Word(data: it as String).save()
             }

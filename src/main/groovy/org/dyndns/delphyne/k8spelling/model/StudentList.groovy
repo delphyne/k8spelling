@@ -7,15 +7,19 @@ import groovy.transform.Canonical
 @Entity
 class StudentList implements ListOfAtoms {
     String name
-    List items
+    SortedSet items
     
     static hasMany = [items: Student]
     static transients = ["default"]
     static mapping = { items(lazy: false) }
     
     static StudentList getDefault() {
-        new StudentList(name: "Default", students: Student.list())
+        new StudentList(name: "Default", students: Student.list() as SortedSet)
     }
     
     String toString() { name }
+    
+    static constraints = {
+        name(blank: false)
+    }
 }

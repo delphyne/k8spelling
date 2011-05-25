@@ -7,15 +7,19 @@ import groovy.transform.Canonical
 @Entity
 class WordList implements ListOfAtoms {
     String name
-    List items
+    SortedSet items
     
     static hasMany = [items: Word]
     static mapping = { items(lazy: false) }
     static transients = ["default"]
     
     static WordList getDefault() {
-        new WordList(name: "Default", items: Word.list())
+        new WordList(name: "Default", items: Word.list() as SortedSet)
     }
     
     String toString() { name }
+    
+    static constraints = {
+        name(blank: false)
+    }
 }
