@@ -59,13 +59,13 @@ class ListEditorPanel implements GuiPanel {
                                                         listType.withTransaction {
                                                             newList = listType.newInstance()
                                                             newList.name = newName
-                                                            newList.items = []
+                                                            newList.items = [] as SortedSet
                                                             newList.save()
                                                         }
                                                         listSelection.model << newList
                                                         listSelection.model.selectedItem = newList
                                                     }
-                                                    status.message = "Created new ${listType.simpleName}, 'newName'"
+                                                    status.message = "Created new list, 'newName'"
                                                 })
                                                 )
             }
@@ -84,40 +84,48 @@ class ListEditorPanel implements GuiPanel {
                 panel(constraints: BorderLayout.SOUTH) {
                     button(action(name: ">>", closure: {
                         def l = listSelection.model.selectedItem
+                        l.refresh()
                         listType.withTransaction {
-                            l.items = []
+                            l.items = [] as SortedSet
                             l.save()
+                            status.message = "Removed all items from '$l'"
                         }
                         updateLists()
                     })
                     )
                     button(action(name: ">", closure: {
                         def l = listSelection.model.selectedItem
+                        l.refresh()
                         def toBeRemoved = left.selectedValues
                         listType.withTransaction {
-                            l.items = l.items - toBeRemoved
+                            toBeRemoved.each { l.removeFromItems(it) }
                             l.save()
+                            status.message = "Removed $toBeRemoved from '$l'"
                         }
                         updateLists()
                     }))
                     button(action(name: "<", closure: {
                         def l = listSelection.model.selectedItem
+                        l.refresh()
                         def jumpToIndex = l.items.size()
                         def toBeAdded = right.selectedValues
                         listType.withTransaction {
                             l.items.addAll(toBeAdded)
                             l.save()
+                            status.message = "Added $toBeAdded to '$l'"
                         }
                         updateLists()
                         left.ensureIndexIsVisible(jumpToIndex)
                     }))
                     button(action(name: "<<", closure: {
                         def l = listSelection.model.selectedItem
+                        l.refresh()
                         def jumpToIndex = l.items.size()
                         def toBeAdded = listType.default.items - l.items
                         listType.withTransaction {
                             l.items.addAll(toBeAdded)
                             l.save()
+                            status.message = "Added $toBeAdded to '$l'"
                         }
                         updateLists()
                         left.ensureIndexIsVisible(jumpToIndex)
@@ -130,18 +138,15 @@ class ListEditorPanel implements GuiPanel {
                                                 mnemonic: "A",
                                                 closure: {
                                                     def l = listSelection.model.selectedItem
+                                                    l.refresh()
                                                     def jumpToIndex = l.items.size()
                                                     singleType.withTransaction {
                                                         def newItem = singleType.newInstance()
                                                         newItem.data = defaultFocus.text
-                                                        try {
-                                                            newItem.save()
-                                                            status.message = "Added '$newItem' to ${singleType.simpleName}"
-                                                        } catch (Exception e) {
-                                                            status.message = "Failed to persist $newItem"
-                                                        }
+                                                        newItem.save()
                                                         l.addToItems(newItem)
                                                         l.save()
+                                                        status.message = "Created '$newItem' and added to '$l'"
                                                     }
                                                     updateLists()
                                                     left.ensureIndexIsVisible(jumpToIndex)

@@ -12,7 +12,7 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 
 @Slf4j
-class StatusPanel implements GuiPanel {
+class StatusPanel implements GuiPanel, Thread.UncaughtExceptionHandler {
     JPanel widget
     Component defaultFocus
     JButton defaultButton
@@ -30,9 +30,11 @@ class StatusPanel implements GuiPanel {
                 label = label(constraints: BorderLayout.CENTER)
             }
         }
+        
+        Thread.defaultUncaughtExceptionHandler = this
     }
 
-    void setMessage(String msg) {
+    void setMessage(String msg, boolean writeLog = true) {
         FontMetrics metrics = label.getFontMetrics(label.getFont())
 
         int maxWidth = label.width - 10
@@ -45,6 +47,14 @@ class StatusPanel implements GuiPanel {
         }
 
         label.text = msg
-        log.info msg
+
+        if (log) {
+            log.info msg
+        }
+    }
+    
+    void uncaughtException(Thread t, Throwable e) {
+        log.error "Uncaught Error", e
+        setMessage("Error: ${e.message}", false)
     }
 }
