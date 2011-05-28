@@ -32,8 +32,8 @@ class GuiTestBase extends TestBase {
             frame.pack()
             frame.show()
             
-            frame.rootPane.defaultButton = panel.defaultButton
-            panel.defaultFocus.requestFocusInWindow()
+            if (panel.defaultButton) { frame.rootPane.defaultButton = panel.defaultButton }
+            if (panel.defaultFocus) { panel.defaultFocus.requestFocusInWindow() }
         }
         
         status.message = "Ready"

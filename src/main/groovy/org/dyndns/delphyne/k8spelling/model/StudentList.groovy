@@ -7,14 +7,14 @@ import groovy.transform.Canonical
 @Entity
 class StudentList implements ListOfAtoms {
     String name
-    SortedSet items
+    List items
     
     static hasMany = [items: Student]
     static transients = ["default"]
     static mapping = { items(lazy: false) }
     
     static StudentList getDefault() {
-        new StudentList(name: "Default", students: Student.list() as SortedSet)
+        new StudentList(name: "Default", students: Student.list())
     }
     
     String toString() { name }

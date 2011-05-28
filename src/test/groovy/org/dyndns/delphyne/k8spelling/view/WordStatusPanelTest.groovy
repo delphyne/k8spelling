@@ -9,16 +9,38 @@ import org.dyndns.delphyne.k8spelling.model.WordList
 class WordStatusPanelTest extends GuiTestBase {
     static {
         StudentList.withTransaction {
-            new StudentList(name:"1st grade", items: [new Student(data:"Brian"), new Student(data:"Kate"), new Student("Sam")] as SortedSet).save()
-            new StudentList(name:"2nd grade", items: [new Student(data:"Angie"), new Student(data:"Joy")] as SortedSet).save()
+            new StudentList("1st grade", [
+                new Student("Brian"),
+                new Student("Kate"),
+                new Student("Sam"),
+                new Student("Jenni"),
+                new Student("Geoff"),
+                new Student("Margaret"),
+                new Student("Christen"),
+                new Student("Carolyn"),
+                new Student("Jerry"),
+                new Student("Jeannie")
+            ]).save()
+            new StudentList("2nd grade", [
+                new Student(data:"Angie"),
+                new Student(data:"Joy")
+            ]).save()
         }
-        
+
         WordList.withTransaction {
-            new WordList(name:"1st grade", items: [new Word(data: "who"), new Word(data: "what"), new Word(data: "when")] as SortedSet).save()
-            new WordList(name:"2nd grade", items: [new Word(data: "where"), new Word(data: "why"), new Word(data: "how")] as SortedSet).save()
+            new WordList("1st grade", [
+                new Word("who"),
+                new Word("what"),
+                new Word("when")
+            ]).save()
+            new WordList("2nd grade", [
+                new Word("where"),
+                new Word("why"),
+                new Word("how")
+            ]).save()
         }
     }
-    
+
     static void main(String[] args) {
         StatusPanel status = new StatusPanel()
         new WordStatusPanelTest().buildGui(new WordStatusPanel(status), status)

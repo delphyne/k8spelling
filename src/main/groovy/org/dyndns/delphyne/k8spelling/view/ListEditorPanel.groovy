@@ -59,7 +59,7 @@ class ListEditorPanel implements GuiPanel {
                                                         listType.withTransaction {
                                                             newList = listType.newInstance()
                                                             newList.name = newName
-                                                            newList.items = [] as SortedSet
+                                                            newList.items = []
                                                             newList.save()
                                                         }
                                                         listSelection.model << newList
@@ -86,7 +86,7 @@ class ListEditorPanel implements GuiPanel {
                         def l = listSelection.model.selectedItem
                         l.refresh()
                         listType.withTransaction {
-                            l.items = [] as SortedSet
+                            l.items = []
                             l.save()
                             status.message = "Removed all items from '$l'"
                         }
