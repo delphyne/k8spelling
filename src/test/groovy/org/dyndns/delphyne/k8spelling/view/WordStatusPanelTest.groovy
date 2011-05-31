@@ -5,6 +5,8 @@ import org.dyndns.delphyne.k8spelling.model.Student
 import org.dyndns.delphyne.k8spelling.model.StudentList
 import org.dyndns.delphyne.k8spelling.model.Word
 import org.dyndns.delphyne.k8spelling.model.WordList
+import org.dyndns.delphyne.k8spelling.model.WordState;
+import org.dyndns.delphyne.k8spelling.model.WordStatus
 
 class WordStatusPanelTest extends GuiTestBase {
     static {
@@ -31,13 +33,20 @@ class WordStatusPanelTest extends GuiTestBase {
             new WordList("1st grade", [
                 new Word("who"),
                 new Word("what"),
-                new Word("when")
+                new Word("when"),
+                new Word("random")
             ]).save()
             new WordList("2nd grade", [
                 new Word("where"),
                 new Word("why"),
                 new Word("how")
             ]).save()
+        }
+        
+        WordStatus.withTransaction {
+            new WordStatus(word: Word.findByData("who"), student:Student.findByData("Brian"), wordState: WordState.Mastered, masteredDate: new Date()).save()
+            new WordStatus(word: Word.findByData("when"), student:Student.findByData("Kate"), wordState: WordState.Assigned, assignedDate: new Date() - 1).save()
+            new WordStatus(word: Word.findByData("what"), student:Student.findByData("Sam"), wordState: WordState.Mastered, masteredDate: new Date() - 5).save()
         }
     }
 

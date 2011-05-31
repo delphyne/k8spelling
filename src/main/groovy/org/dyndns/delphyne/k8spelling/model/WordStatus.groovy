@@ -15,4 +15,8 @@ class WordStatus {
         masteredDate(nullable:true)
         assignedDate(nullable:true)
     }
+    
+    String toString() {
+        wordState
+    }
 }
