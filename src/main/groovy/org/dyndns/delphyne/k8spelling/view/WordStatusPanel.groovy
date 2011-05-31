@@ -16,6 +16,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer
 import javax.swing.table.TableColumn
 
+import org.dyndns.delphyne.k8spelling.controller.WordStatusController;
 import org.dyndns.delphyne.k8spelling.model.Student
 import org.dyndns.delphyne.k8spelling.model.StudentList
 import org.dyndns.delphyne.k8spelling.model.Word
@@ -33,39 +34,32 @@ class WordStatusPanel implements GuiPanel {
     private StatusPanel status
     private SwingBuilder swing
 
-    private JComboBox studentListPicker
-    private JComboBox wordListPicker
-
-    private JTable mapping
-
-    private TableCellRenderer renderer
-
     WordStatusPanel(StatusPanel status) {
         swing = new SwingBuilder()
 
-        renderer = new VerticalTableHeaderCellRenderer()
+        TableCellRenderer renderer = new VerticalTableHeaderCellRenderer()
 
-        studentListPicker = swing.comboBox(model: new DefaultComboBoxModel(StudentList.list() as Object[]))
-        wordListPicker = swing.comboBox(model: new DefaultComboBoxModel(WordList.list() as Object[]))
+        swing.comboBox(id: "studentLists", items: StudentList.list())
+        swing.comboBox(id: "wordLists", items: WordList.list())
 
         widget = swing.panel {
             borderLayout()
 
             widget = panel(constraints: BorderLayout.NORTH) {
-                label(text: "Students:", labelFor: studentListPicker)
-                widget(studentListPicker)
-                label(text: "Words:", labelFor: wordListPicker)
-                widget(wordListPicker)
+                label(text: "Students:", labelFor: studentLists)
+                widget(studentLists)
+                label(text: "Words:", labelFor: wordLists)
+                widget(wordLists)
             }
 
-            scrollPane(constraints: BorderLayout.CENTER) { table(id: 'mappingTable') }
+            scrollPane(constraints: BorderLayout.CENTER) { table(id: "mappingTable") }
         }
 
-        swing.mappingTable.model = new WordStatusDataModel(studentListPicker.model.selectedItem, wordListPicker.model.selectedItem)
+        swing.mappingTable.model = new WordStatusDataModel(swing.studentLists.model.selectedItem, swing.wordLists.model.selectedItem)
         swing.mappingTable.columnModel.columns.each { TableColumn it -> it.headerRenderer = new VerticalTableHeaderCellRenderer() }
         swing.mappingTable.columnModel.columns.eachWithIndex { TableColumn col, int i ->
             if (i != 0) {
-                col.cellEditor = new DefaultCellEditor(swing.comboBox(items: [null]+ (WordState.values() as List)))
+                col.cellEditor = new DefaultCellEditor(swing.comboBox(items: [null] + (WordState.values() as List)))
                 col.cellRenderer = new WordStatusCellRenderer()
             }
         }
@@ -109,6 +103,14 @@ class WordStatusDataModel extends AbstractTableModel {
 
     @Override
     void setValueAt(Object value, int row, int col) {
+        if (col != 0) {
+            WordStatus status = getValueAt(row, col)
+            if (status) {
+                WordStatusController.update(status, value)
+            } else {
+                status = WordStatusController.create(words.items[row], students.items[col - 1], value)
+            }
+        }
     }
 }
 

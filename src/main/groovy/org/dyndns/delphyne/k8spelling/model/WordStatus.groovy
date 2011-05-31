@@ -6,17 +6,17 @@ import grails.persistence.Entity
 class WordStatus {
     Student student
     Word word
-    WordState wordState
+    WordState state
     Date masteredDate
     Date assignedDate
     
     static constraints = {
-        wordState(nullable:true)
+        state(nullable:true)
         masteredDate(nullable:true)
         assignedDate(nullable:true)
     }
     
     String toString() {
-        wordState
+        state
     }
 }

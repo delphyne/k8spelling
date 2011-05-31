@@ -44,9 +44,9 @@ class WordStatusPanelTest extends GuiTestBase {
         }
         
         WordStatus.withTransaction {
-            new WordStatus(word: Word.findByData("who"), student:Student.findByData("Brian"), wordState: WordState.Mastered, masteredDate: new Date()).save()
-            new WordStatus(word: Word.findByData("when"), student:Student.findByData("Kate"), wordState: WordState.Assigned, assignedDate: new Date() - 1).save()
-            new WordStatus(word: Word.findByData("what"), student:Student.findByData("Sam"), wordState: WordState.Mastered, masteredDate: new Date() - 5).save()
+            new WordStatus(word: Word.findByData("who"), student:Student.findByData("Brian"), state: WordState.Mastered, masteredDate: new Date()).save()
+            new WordStatus(word: Word.findByData("when"), student:Student.findByData("Kate"), state: WordState.Assigned, assignedDate: new Date() - 1).save()
+            new WordStatus(word: Word.findByData("what"), student:Student.findByData("Sam"), state: WordState.Mastered, masteredDate: new Date() - 5).save()
         }
     }
 
