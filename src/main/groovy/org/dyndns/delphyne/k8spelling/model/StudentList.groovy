@@ -14,7 +14,7 @@ class StudentList implements ListOfAtoms {
     static mapping = { items(lazy: false) }
     
     static StudentList getDefault() {
-        new StudentList(name: "Default", students: Student.list())
+        new StudentList(name: "Default", items: Student.list())
     }
     
     String toString() { name }

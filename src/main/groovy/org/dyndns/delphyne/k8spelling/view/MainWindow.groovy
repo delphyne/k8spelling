@@ -28,17 +28,17 @@ class MainWindow {
                     borderLayout()
                     tabbedPane(constraints: BorderLayout.CENTER) {
                         panel(name: "One") {
-                            widget(new WordStatusPanel())
+                            widget(new WordStatusPanel().widget)
                         }
                         panel(name: "Words") {
-                            widget(new ListEditorPanel(Word, WordList, status))
+                            widget(new ListEditorPanel(Word, WordList, status).widget)
                         }
                         panel(name: "Students") {
-                            widget(new ListEditorPanel(Student, StudentList, status))
+                            widget(new ListEditorPanel(Student, StudentList, status).widget)
                         }
                     }
                     panel(constraints: BorderLayout.SOUTH) {
-                        widget(status)
+                        widget(status.widget)
                     }
                 }
             }

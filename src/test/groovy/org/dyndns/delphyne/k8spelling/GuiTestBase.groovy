@@ -18,24 +18,24 @@ class GuiTestBase extends TestBase {
     static void guiTestBaseClassSetup() {
         UISpec4J.init()
     }
-    
-    JFrame frame
-        
+
     void buildGui(GuiPanel panel, StatusPanel status) {
         swing.edt {
-            frame = frame(title:this.class.simpleName, defaultCloseOperation:JFrame.DISPOSE_ON_CLOSE) {
+            frame(id: "testWindow", title: this.class.simpleName, size: [640, 480], show: true, defaultCloseOperation: JFrame.DISPOSE_ON_CLOSE) {
                 borderLayout()
+                widget(id: "testedPanel", constraints: BorderLayout.CENTER, panel.widget)
+                widget(id: "status", constraints: BorderLayout.SOUTH, status.widget)
             }
-            frame.contentPane.add(panel.widget, BorderLayout.CENTER)
-            frame.contentPane.add(status.widget, BorderLayout.SOUTH)
-            
-            frame.pack()
-            frame.show()
-            
-            if (panel.defaultButton) { frame.rootPane.defaultButton = panel.defaultButton }
-            if (panel.defaultFocus) { panel.defaultFocus.requestFocusInWindow() }
+        }
+
+        if (panel.defaultButton) {
+            swing.testWindow.rootPane.defaultButton = panel.defaultButton
         }
         
+        if (panel.defaultFocus) {
+            panel.defaultFocus.requestFocusInWindow()
+        }
+
         status.message = "Ready"
     }
 }

@@ -29,6 +29,8 @@ class ListEditorPanel implements GuiPanel {
 
     private SwingBuilder swing
 
+    private toBeDisabled = []
+
     ListEditorPanel(Class singleType, Class listType, StatusPanel status) {
         this.singleType = singleType
         this.listType = listType
@@ -162,11 +164,17 @@ class ListEditorPanel implements GuiPanel {
     }
 
     void updateLists() {
-        def leftValues = listSelection.model.selectedItem.items
+        def list = listSelection.model.selectedItem
+        def leftValues = list?.items
         def allValues = listType.default.items
         def rightValues = allValues - leftValues
 
-        left.listData = leftValues as Object[]
+        if (list) {
+            left.listData = leftValues as Object[]
+            toBeDisabled.each { it.enabled = true }
+        } else {
+            toBeDisabled.each { it.enabled = false }
+        }
         right.listData = rightValues.sort() as Object[]
     }
 }

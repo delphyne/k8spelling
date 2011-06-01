@@ -39,8 +39,8 @@ class WordStatusPanel implements GuiPanel {
 
         TableCellRenderer renderer = new VerticalTableHeaderCellRenderer()
 
-        swing.comboBox(id: "studentLists", items: StudentList.list())
-        swing.comboBox(id: "wordLists", items: WordList.list())
+        swing.comboBox(id: "studentLists", items: [StudentList.default] + StudentList.list())
+        swing.comboBox(id: "wordLists", items: [WordList.default] + WordList.list())
 
         widget = swing.panel {
             borderLayout()

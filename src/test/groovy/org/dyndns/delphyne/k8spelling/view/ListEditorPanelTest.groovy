@@ -6,19 +6,19 @@ import org.dyndns.delphyne.k8spelling.model.WordList
 
 class ListEditorPanelTest extends GuiTestBase {
     
-    static {
-        Word.withTransaction {
-            ["foo","bar","baz"].each { new Word(data:it).save() }
-        }
-        
-        WordList.withTransaction {
-            def wl = new WordList(name:"two")
-            def words = []
-            5.times { wl.addToItems(new Word(data: it as String)) }
-            wl.save()
-            new WordList(name:"one").save()
-        }
-    }
+//    static {
+//        Word.withTransaction {
+//            ["foo","bar","baz"].each { new Word(data:it).save() }
+//        }
+//        
+//        WordList.withTransaction {
+//            def wl = new WordList(name:"two")
+//            def words = []
+//            5.times { wl.addToItems(new Word(data: it as String)) }
+//            wl.save()
+//            new WordList(name:"one").save()
+//        }
+//    }
     
     static void main(String[] args) {
         StatusPanel status = new StatusPanel()
