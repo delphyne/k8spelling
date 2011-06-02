@@ -39,27 +39,27 @@ class WordStatusPanel implements GuiPanel {
 
         TableCellRenderer renderer = new VerticalTableHeaderCellRenderer()
 
-        swing.comboBox(id: "studentLists", items: [StudentList.default] + StudentList.list())
-        swing.comboBox(id: "wordLists", items: [WordList.default] + WordList.list())
+        swing.comboBox(id: "studentLists", items: [StudentList.default]+ StudentList.list())
+        swing.comboBox(id: "wordLists", items: [WordList.default]+ WordList.list())
 
         widget = swing.panel {
-            borderLayout()
+                borderLayout()
 
-            widget = panel(constraints: BorderLayout.NORTH) {
-                label(text: "Students:", labelFor: studentLists)
-                widget(studentLists)
-                label(text: "Words:", labelFor: wordLists)
-                widget(wordLists)
-            }
+                widget = panel(constraints: BorderLayout.NORTH) {
+                    label(text: "Students:", labelFor: studentLists)
+                    widget(studentLists)
+                    label(text: "Words:", labelFor: wordLists)
+                    widget(wordLists)
+                }
 
-            scrollPane(constraints: BorderLayout.CENTER) { table(id: "mappingTable") }
+                scrollPane(constraints: BorderLayout.CENTER) { table(id: "mappingTable") }
         }
 
         swing.mappingTable.model = new WordStatusDataModel(swing.studentLists.model.selectedItem, swing.wordLists.model.selectedItem)
         swing.mappingTable.columnModel.columns.each { TableColumn it -> it.headerRenderer = new VerticalTableHeaderCellRenderer() }
         swing.mappingTable.columnModel.columns.eachWithIndex { TableColumn col, int i ->
             if (i != 0) {
-                col.cellEditor = new DefaultCellEditor(swing.comboBox(items: [null] + (WordState.values() as List)))
+                col.cellEditor = new DefaultCellEditor(swing.comboBox(items: [null]+ (WordState.values() as List)))
                 col.cellRenderer = new WordStatusCellRenderer()
             }
         }
