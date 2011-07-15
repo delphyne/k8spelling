@@ -28,8 +28,9 @@ class GuiTestBase extends TestBase {
             }
         }
 
-        if (panel.defaultButton) {
-            swing.testWindow.rootPane.defaultButton = panel.defaultButton
+        def defaultButton = panel.defaultButton
+        if (defaultButton) {
+            swing.testWindow.rootPane.defaultButton = defaultButton
         }
         
         if (panel.defaultFocus) {

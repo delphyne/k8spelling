@@ -201,9 +201,9 @@ class ListEditorPanel extends JPanel implements GuiPanel {
 
     JButton getDefaultButton() {
         if (swing.listSelection.model.selectedItem) {
-            swing.addListButton
-        } else {
             swing.addItemButton
+        } else {
+            swing.addListButton
         }
     }
 }

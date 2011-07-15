@@ -26,15 +26,16 @@ import org.dyndns.delphyne.k8spelling.model.WordStatus
 
 import darrylbu.renderer.VerticalTableHeaderCellRenderer
 
-class WordStatusPanel implements GuiPanel {
+class WordStatusPanel extends JPanel implements GuiPanel {
     JPanel widget
     Component defaultFocus
     JButton defaultButton
 
-    private StatusPanel status
     private SwingBuilder swing
 
     WordStatusPanel(StatusPanel status) {
+        super(new BorderLayout())
+
         swing = new SwingBuilder()
 
         TableCellRenderer renderer = new VerticalTableHeaderCellRenderer()
@@ -42,17 +43,19 @@ class WordStatusPanel implements GuiPanel {
         swing.comboBox(id: "studentLists", items: [StudentList.default]+ StudentList.list())
         swing.comboBox(id: "wordLists", items: [WordList.default]+ WordList.list())
 
-        widget = swing.panel {
-                borderLayout()
+        swing.panel(id: "wordStatusPanel", constraints: BorderLayout.CENTER) {
+            borderLayout()
 
-                widget = panel(constraints: BorderLayout.NORTH) {
+            widget = panel(constraints: BorderLayout.NORTH) {
+                hbox {
                     label(text: "Students:", labelFor: studentLists)
                     widget(studentLists)
                     label(text: "Words:", labelFor: wordLists)
                     widget(wordLists)
                 }
+            }
 
-                scrollPane(constraints: BorderLayout.CENTER) { table(id: "mappingTable") }
+            scrollPane(constraints: BorderLayout.CENTER) { table(id: "mappingTable") }
         }
 
         swing.mappingTable.model = new WordStatusDataModel(swing.studentLists.model.selectedItem, swing.wordLists.model.selectedItem)
@@ -63,6 +66,11 @@ class WordStatusPanel implements GuiPanel {
                 col.cellRenderer = new WordStatusCellRenderer()
             }
         }
+
+        widget = swing.wordStatusPanel
+
+
+        this.add(widget)
     }
 }
 
