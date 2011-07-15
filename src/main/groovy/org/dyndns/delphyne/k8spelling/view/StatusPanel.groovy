@@ -14,7 +14,7 @@ import javax.swing.JPanel
 @Slf4j
 class StatusPanel implements GuiPanel, Thread.UncaughtExceptionHandler {
     JPanel widget
-    Component defaultFocus
+    Component defaultFocus 
     JButton defaultButton
 
     private JLabel label
@@ -48,7 +48,7 @@ class StatusPanel implements GuiPanel, Thread.UncaughtExceptionHandler {
 
         label.text = msg
 
-        if (log) {
+        if (writeLog) {
             log.info msg
         }
     }

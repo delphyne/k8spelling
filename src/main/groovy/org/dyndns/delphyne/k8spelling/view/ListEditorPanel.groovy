@@ -1,7 +1,5 @@
 package org.dyndns.delphyne.k8spelling.view
 
-import groovy.swing.SwingBuilder
-
 import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.event.ActionEvent
@@ -9,11 +7,12 @@ import java.awt.event.ActionEvent
 import javax.swing.Action
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JButton
-import javax.swing.JComboBox
-import javax.swing.JList
 import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JSplitPane
+
+import groovy.swing.SwingBuilder
+import groovy.util.logging.Slf4j;
 
 class ListEditorPanel extends JPanel implements GuiPanel {
     JPanel widget

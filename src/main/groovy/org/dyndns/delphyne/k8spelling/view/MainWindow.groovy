@@ -1,18 +1,19 @@
 package org.dyndns.delphyne.k8spelling.view
 
-import groovy.swing.SwingBuilder
-
 import java.awt.BorderLayout
-import java.awt.Color
 
 import javax.swing.JFrame
 import javax.swing.JOptionPane
+import javax.swing.event.ChangeEvent
+import javax.swing.event.ChangeListener
 
 import org.dyndns.delphyne.k8spelling.Config
 import org.dyndns.delphyne.k8spelling.model.Student
 import org.dyndns.delphyne.k8spelling.model.StudentList
 import org.dyndns.delphyne.k8spelling.model.Word
 import org.dyndns.delphyne.k8spelling.model.WordList
+
+import groovy.swing.SwingBuilder
 
 class MainWindow {
     MainWindow() {
@@ -36,17 +37,18 @@ class MainWindow {
                     tabbedPane(id: "tabs", constraints: BorderLayout.CENTER) {
                         panel(name: "Status", border: emptyBorder(3)) {
                             borderLayout()
-                            widget(id: "wordStatusPanel", constraints: BorderLayout.CENTER, new WordStatusPanel().widget)
+                            widget(id: "wordStatusPanel", constraints: BorderLayout.CENTER, new WordStatusPanel())
                         }
                         panel(name: "Words", border: emptyBorder(3)) {
                             borderLayout()
-                            widget(id: "wordListEditorPanel", constraints: BorderLayout.CENTER, new ListEditorPanel(Word, WordList, status).widget)
+                            widget(id: "wordListEditorPanel", constraints: BorderLayout.CENTER, new ListEditorPanel(Word, WordList, status))
                         }
                         panel(name: "Students", border: emptyBorder(3)) {
                             borderLayout()
-                            widget(id: "studentListEditorPanel", constraints: BorderLayout.CENTER, new ListEditorPanel(Student, StudentList, status).widget)
+                            widget(id: "studentListEditorPanel", constraints: BorderLayout.CENTER, new ListEditorPanel(Student, StudentList, status))
                         }
                     }
+                    tabs.addChangeListener([stateChanged: { ChangeEvent e -> status.message = e.source.toString() }] as ChangeListener)
                     panel(constraints: BorderLayout.SOUTH, border: emptyBorder(3)) {
                         borderLayout()
                         widget(id: "statusPanel", constraints: BorderLayout.CENTER, status.widget)
@@ -54,6 +56,6 @@ class MainWindow {
                 }
             }
         }
-        status.message = "Ready"
+//        status.message = "Ready"
     }
 }
