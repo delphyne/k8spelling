@@ -1,15 +1,11 @@
 package org.dyndns.delphyne.k8spelling.controller
 
-import java.lang.Thread.State;
-
-import groovy.util.logging.Slf4j
-
 import org.dyndns.delphyne.k8spelling.model.Student
 import org.dyndns.delphyne.k8spelling.model.Word
 import org.dyndns.delphyne.k8spelling.model.WordState
 import org.dyndns.delphyne.k8spelling.model.WordStatus
 
-@Slf4j
+
 class WordStatusController {
     
     static WordStatus create(Word word, Student student, WordState state) {

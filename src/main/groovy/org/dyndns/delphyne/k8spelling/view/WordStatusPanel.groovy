@@ -1,33 +1,28 @@
 package org.dyndns.delphyne.k8spelling.view
 
-import groovy.swing.SwingBuilder
-
 import java.awt.BorderLayout
 import java.awt.Component
 
-import javax.swing.DefaultCellEditor;
-import javax.swing.DefaultComboBoxModel
+import javax.swing.DefaultCellEditor
 import javax.swing.JButton
-import javax.swing.JComboBox
 import javax.swing.JPanel
 import javax.swing.JTable
 import javax.swing.table.AbstractTableModel
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.TableCellRenderer
 import javax.swing.table.TableColumn
 
-import org.dyndns.delphyne.k8spelling.controller.WordStatusController;
-import org.dyndns.delphyne.k8spelling.model.Student
+import org.dyndns.delphyne.k8spelling.controller.WordStatusController
 import org.dyndns.delphyne.k8spelling.model.StudentList
-import org.dyndns.delphyne.k8spelling.model.Word
 import org.dyndns.delphyne.k8spelling.model.WordList
-import org.dyndns.delphyne.k8spelling.model.WordState;
+import org.dyndns.delphyne.k8spelling.model.WordState
 import org.dyndns.delphyne.k8spelling.model.WordStatus
 
 import darrylbu.renderer.VerticalTableHeaderCellRenderer
+import groovy.swing.SwingBuilder
 
 class WordStatusPanel extends JPanel implements GuiPanel {
-    JPanel widget
+    
     Component defaultFocus
     JButton defaultButton
 
@@ -39,14 +34,18 @@ class WordStatusPanel extends JPanel implements GuiPanel {
         swing = new SwingBuilder()
 
         TableCellRenderer renderer = new VerticalTableHeaderCellRenderer()
+        
+        swing.build {
+            action(id: 'onSelectionUpdate', closure: { updateModel() })
+        }
 
-        swing.comboBox(id: "studentLists", items: [StudentList.default]+ StudentList.list())
-        swing.comboBox(id: "wordLists", items: [WordList.default]+ WordList.list())
+        swing.comboBox(id: "studentLists", items: [StudentList.default]+ StudentList.list(), action: swing.onSelectionUpdate)
+        swing.comboBox(id: "wordLists", items: [WordList.default]+ WordList.list(), action: swing.onSelectionUpdate)
 
         swing.panel(id: "wordStatusPanel", constraints: BorderLayout.CENTER) {
             borderLayout()
 
-            widget = panel(constraints: BorderLayout.NORTH) {
+            panel(constraints: BorderLayout.NORTH) {
                 hbox {
                     label(text: "Students:", labelFor: studentLists)
                     widget(studentLists)
@@ -58,6 +57,12 @@ class WordStatusPanel extends JPanel implements GuiPanel {
             scrollPane(constraints: BorderLayout.CENTER) { table(id: "mappingTable") }
         }
 
+        updateModel()
+
+        this.add(swing.wordStatusPanel)
+    }
+
+    void updateModel() {
         swing.mappingTable.model = new WordStatusDataModel(swing.studentLists.model.selectedItem, swing.wordLists.model.selectedItem)
         swing.mappingTable.columnModel.columns.each { TableColumn it -> it.headerRenderer = new VerticalTableHeaderCellRenderer() }
         swing.mappingTable.columnModel.columns.eachWithIndex { TableColumn col, int i ->
@@ -66,11 +71,25 @@ class WordStatusPanel extends JPanel implements GuiPanel {
                 col.cellRenderer = new WordStatusCellRenderer()
             }
         }
+        swing.mappingTable.doLayout()
+    }
+    
+    void updateLists() {
+        [(swing.studentLists): [StudentList.default] + StudentList.list(), 
+                (swing.wordLists): [WordList.default] + WordList.list()].each { list, data ->
+            list.with {
+                data.each { item ->
+                    if (!model.objects.contains(item)) {
+                        model << item
+                    } 
+                }
+            }
+        }
+    }
 
-        widget = swing.wordStatusPanel
-
-
-        this.add(widget)
+    void onFocus() {
+        updateLists()
+//        updateModel()
     }
 }
 
@@ -88,7 +107,7 @@ class WordStatusDataModel extends AbstractTableModel {
     }
 
     int getRowCount() {
-        words.items.size()
+        words.items.size() + 1
     }
 
     public Object getValueAt(int row, int col) {
@@ -123,10 +142,11 @@ class WordStatusDataModel extends AbstractTableModel {
 }
 
 class WordStatusCellRenderer extends DefaultTableCellRenderer {
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
     int row, int col) {
         if (value) {
-            toolTipText = "<html>Assigned: ${value.assignedDate?.format("MM/dd/yyyy") ?: ""}<br>Mastered: ${value.masteredDate?.format("MM/dd/yyyy") ?: ""}</html>"
+            toolTipText = "<html>Assigned: ${value.assignedDate?.format('MM/dd/yyyy') ?: ''}<br>Mastered: ${value.masteredDate?.format("MM/dd/yyyy") ?: ""}</html>"
         }
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col)
     }

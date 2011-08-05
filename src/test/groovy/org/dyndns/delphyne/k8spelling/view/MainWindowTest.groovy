@@ -1,6 +1,8 @@
 package org.dyndns.delphyne.k8spelling.view
 
-class MainWindowTest {
+import org.dyndns.delphyne.k8spelling.TestBase
+
+class MainWindowTest extends TestBase {
     static void main(String[] args) {
         new MainWindow()
     }

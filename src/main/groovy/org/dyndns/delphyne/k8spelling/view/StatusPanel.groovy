@@ -1,36 +1,35 @@
 package org.dyndns.delphyne.k8spelling.view
 
-import groovy.swing.SwingBuilder
-import groovy.util.logging.Slf4j
-
 import java.awt.BorderLayout
-import java.awt.Component
 import java.awt.FontMetrics
 
-import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-@Slf4j
-class StatusPanel implements GuiPanel, Thread.UncaughtExceptionHandler {
-    JPanel widget
-    Component defaultFocus 
-    JButton defaultButton
+import org.apache.log4j.Logger
+
+import groovy.swing.SwingBuilder
+
+class StatusPanel extends JPanel implements Thread.UncaughtExceptionHandler {
 
     private JLabel label
 
     private SwingBuilder swing
 
+    private final static Logger log = Logger.getLogger(StatusPanel)
+
     StatusPanel() {
         swing = new SwingBuilder()
 
-        widget = swing.build {
-            panel(border: compoundBorder(outer: loweredBevelBorder(), inner: emptyBorder(3))) {
+        swing.build {
+            panel(id: "statusPanelWidget", border: compoundBorder(outer: loweredBevelBorder(), inner: emptyBorder(3))) {
                 borderLayout()
                 label = label(constraints: BorderLayout.CENTER)
             }
         }
-        
+
+        this.add(swing.statusPanelWidget)
+
         Thread.defaultUncaughtExceptionHandler = this
     }
 
@@ -52,7 +51,7 @@ class StatusPanel implements GuiPanel, Thread.UncaughtExceptionHandler {
             log.info msg
         }
     }
-    
+
     void uncaughtException(Thread t, Throwable e) {
         log.error "Uncaught Error", e
         setMessage("Error: ${e.message}", false)

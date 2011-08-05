@@ -6,7 +6,7 @@ import javax.swing.JButton
 import javax.swing.JPanel
 
 interface GuiPanel {
-    JPanel getWidget()
     Component getDefaultFocus()
     JButton getDefaultButton()
+    void onFocus()
 }

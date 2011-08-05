@@ -13,7 +13,7 @@
         class="org.apache.commons.dbcp.BasicDataSource">
         <property
             name="url"
-            value="jdbc:h2:mem:k8spelling" />
+            value="jdbc:h2:k8spelling" />
         <property
             name="username"
             value="sa" />
@@ -37,21 +37,11 @@
         base-package="org.dyndns.delphyne.k8spelling.model"
         data-source-ref="dataSource"
         message-source-ref="messageSource">
-        <property
-            name="hibernateProperties">
+        <property name="hibernateProperties">
             <util:map>
                 <entry
                     key="hibernate.hbm2ddl.auto"
-                    value="create-drop" />
-                <entry
-                    key="hibernate.show_sql"
-                    value="true" />
-                <entry
-                    key="hibernate.format_sql"
-                    value="true" />
-                <entry
-                    key="hibernate.use_sql_comments"
-                    value="true" />
+                    value="update" />
             </util:map>
         </property>
     </gorm:sessionFactory>

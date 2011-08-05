@@ -12,10 +12,8 @@ import javax.swing.JPanel
 import javax.swing.JSplitPane
 
 import groovy.swing.SwingBuilder
-import groovy.util.logging.Slf4j;
 
 class ListEditorPanel extends JPanel implements GuiPanel {
-    JPanel widget
     Component defaultFocus
 
     private Class singleType
@@ -163,7 +161,6 @@ class ListEditorPanel extends JPanel implements GuiPanel {
             }
         }
 
-        widget = swing.listEditorPanel
         defaultFocus = swing.addItemText
 
         swing.with {
@@ -179,7 +176,7 @@ class ListEditorPanel extends JPanel implements GuiPanel {
 
         updateLists()
 
-        this.add(widget)
+        this.add(swing.listEditorPanel)
     }
 
     void updateLists() {
@@ -204,5 +201,11 @@ class ListEditorPanel extends JPanel implements GuiPanel {
         } else {
             swing.addListButton
         }
+    }
+    
+    void onFocus() {
+        /*
+         * noop
+         */
     }
 }

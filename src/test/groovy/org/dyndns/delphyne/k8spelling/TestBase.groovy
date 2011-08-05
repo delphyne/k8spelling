@@ -1,7 +1,8 @@
 package org.dyndns.delphyne.k8spelling
 
-import org.junit.BeforeClass
+import org.springframework.context.ApplicationContext
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 class TestBase {
-    static Config config = new Config("test")
+    static ApplicationContext appCtx = new ClassPathXmlApplicationContext('applicationContext.xml')
 }
