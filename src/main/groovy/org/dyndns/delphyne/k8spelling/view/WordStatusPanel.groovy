@@ -13,6 +13,7 @@ import javax.swing.table.TableCellRenderer
 import javax.swing.table.TableColumn
 
 import org.dyndns.delphyne.k8spelling.controller.WordStatusController
+import org.dyndns.delphyne.k8spelling.model.Student
 import org.dyndns.delphyne.k8spelling.model.StudentList
 import org.dyndns.delphyne.k8spelling.model.WordList
 import org.dyndns.delphyne.k8spelling.model.WordState
@@ -54,7 +55,7 @@ class WordStatusPanel extends JPanel implements GuiPanel {
                     label(text: 'Students:', labelFor: studentLists)
                     widget(studentLists)
                     hstrut()
-                    button(id: 'Auto-Assign')
+                    button(id: 'autoAssignButton', action: action(name: 'Auto-Assign', closure: {autoAssign()}))
                     hglue()
                 }
             }
@@ -90,6 +91,16 @@ class WordStatusPanel extends JPanel implements GuiPanel {
                     list << it
                 }
             }
+        }
+    }
+    
+    void autoAssign() {
+        swing.doLater {
+            swing.studentLists.selectedItem.items.each { Student student ->
+                WordStatusController.autoAssign(student, swing.wordLists.selectedItem)
+            }
+            
+            updateModel()
         }
     }
 
@@ -150,9 +161,7 @@ class WordStatusCellRenderer extends DefaultTableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
     int row, int col) {
-        if (value) {
-            toolTipText = "<html><em>${value?.word ?: ''}</em><br/>Assigned: ${value?.assignedDate?.format('MM/dd/yyyy') ?: ''}<br/>Mastered: ${value?.masteredDate?.format('MM/dd/yyyy') ?: ''}</html>"
-        }
+        toolTipText = "<html><em>${value?.word ?: ''}</em><br/>Assigned: ${value?.assignedDate?.format('MM/dd/yyyy') ?: ''}<br/>Mastered: ${value?.masteredDate?.format('MM/dd/yyyy') ?: ''}</html>"
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col)
     }
 }

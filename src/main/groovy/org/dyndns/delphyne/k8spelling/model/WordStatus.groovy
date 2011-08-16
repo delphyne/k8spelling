@@ -16,6 +16,8 @@ class WordStatus {
         assignedDate(nullable:true)
     }
     
+    static mapping = { word(lazy:false) }
+    
     String toString() {
         state
     }
