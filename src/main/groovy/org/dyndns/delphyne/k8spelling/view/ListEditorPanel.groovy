@@ -62,7 +62,7 @@ class ListEditorPanel extends JPanel implements GuiPanel {
                                                         }
                                                         listSelection.model << newList
                                                         listSelection.model.selectedItem = newList
-                                                        status.message = "Created new list, 'newName'"
+                                                        status.message = "Created new list, '$newName'"
                                                     }
                                                 })
                                                 )

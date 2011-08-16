@@ -22,4 +22,8 @@ class StudentList implements ListOfAtoms {
     static constraints = {
         name(blank: false)
     }
+    
+    Iterator<Student> iterator() {
+        items.iterator()
+    }
 }

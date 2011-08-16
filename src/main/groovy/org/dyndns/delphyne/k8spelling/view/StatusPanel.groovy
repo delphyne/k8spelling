@@ -19,6 +19,8 @@ class StatusPanel extends JPanel implements Thread.UncaughtExceptionHandler {
     private final static Logger log = Logger.getLogger(StatusPanel)
 
     StatusPanel() {
+        super(new BorderLayout())
+        
         swing = new SwingBuilder()
 
         swing.build {
@@ -28,7 +30,7 @@ class StatusPanel extends JPanel implements Thread.UncaughtExceptionHandler {
             }
         }
 
-        this.add(swing.statusPanelWidget)
+        this.add(swing.statusPanelWidget, BorderLayout.CENTER)
 
         Thread.defaultUncaughtExceptionHandler = this
     }

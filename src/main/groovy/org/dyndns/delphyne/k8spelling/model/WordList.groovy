@@ -19,6 +19,8 @@ class WordList implements ListOfAtoms {
     
     String toString() { name }
     
+    Iterator<Word> iterator() { items.iterator() }
+    
     static constraints = {
         name(blank: false)
     }

@@ -55,10 +55,8 @@ class MainWindow {
                              */
                             e.source.visComp.components[0].onFocus()
                         }] as ChangeListener)
-                    panel(constraints: BorderLayout.SOUTH, border: emptyBorder(3)) {
-                        borderLayout()
-                        widget(id: "statusPanel", constraints: BorderLayout.CENTER, status)
-                    }
+
+                    widget(id: "statusPanel", constraints: BorderLayout.SOUTH, status)
                 }
             }
         }

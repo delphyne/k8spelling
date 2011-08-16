@@ -20,9 +20,11 @@ import org.dyndns.delphyne.k8spelling.model.WordStatus
 
 import darrylbu.renderer.VerticalTableHeaderCellRenderer
 import groovy.swing.SwingBuilder
+import groovy.util.logging.Log4j
 
+@Log4j
 class WordStatusPanel extends JPanel implements GuiPanel {
-    
+
     Component defaultFocus
     JButton defaultButton
 
@@ -34,27 +36,27 @@ class WordStatusPanel extends JPanel implements GuiPanel {
         swing = new SwingBuilder()
 
         TableCellRenderer renderer = new VerticalTableHeaderCellRenderer()
-        
+
         swing.build {
             action(id: 'onSelectionUpdate', closure: { updateModel() })
         }
 
-        swing.comboBox(id: "studentLists", items: [StudentList.default]+ StudentList.list(), action: swing.onSelectionUpdate)
         swing.comboBox(id: "wordLists", items: [WordList.default]+ WordList.list(), action: swing.onSelectionUpdate)
+        swing.comboBox(id: "studentLists", items: [StudentList.default]+ StudentList.list(), action: swing.onSelectionUpdate)
 
         swing.panel(id: "wordStatusPanel", constraints: BorderLayout.CENTER) {
             borderLayout()
 
             panel(constraints: BorderLayout.NORTH) {
                 hbox {
-                    label(text: "Students:", labelFor: studentLists)
-                    widget(studentLists)
                     label(text: "Words:", labelFor: wordLists)
                     widget(wordLists)
+                    label(text: "Students:", labelFor: studentLists)
+                    widget(studentLists)
                 }
             }
 
-            scrollPane(constraints: BorderLayout.CENTER) { table(id: "mappingTable") }
+            scrollPane(constraints: BorderLayout.CENTER) { table(id: "mappingTable", autoResizeMode: JTable.AUTO_RESIZE_OFF) }
         }
 
         updateModel()
@@ -66,22 +68,23 @@ class WordStatusPanel extends JPanel implements GuiPanel {
         swing.mappingTable.model = new WordStatusDataModel(swing.studentLists.model.selectedItem, swing.wordLists.model.selectedItem)
         swing.mappingTable.columnModel.columns.each { TableColumn it -> it.headerRenderer = new VerticalTableHeaderCellRenderer() }
         swing.mappingTable.columnModel.columns.eachWithIndex { TableColumn col, int i ->
-            if (i != 0) {
+            if (i == 0) {
+                col.preferredWidth = 100
+            } else {
                 col.cellEditor = new DefaultCellEditor(swing.comboBox(items: [null]+ (WordState.values() as List)))
                 col.cellRenderer = new WordStatusCellRenderer()
+                col.preferredWidth = 25
             }
         }
         swing.mappingTable.doLayout()
     }
-    
+
     void updateLists() {
-        [(swing.studentLists): [StudentList.default] + StudentList.list(), 
-                (swing.wordLists): [WordList.default] + WordList.list()].each { list, data ->
-            list.with {
-                data.each { item ->
-                    if (!model.objects.contains(item)) {
-                        model << item
-                    } 
+        [(swing.studentLists): StudentList, (swing.wordLists): WordList].each { list, type ->
+            list.model.objects.set(0, type.default)
+            type.list().each {
+                if (!list.model.objects.contains(it)) {
+                    list << it
                 }
             }
         }
@@ -89,7 +92,6 @@ class WordStatusPanel extends JPanel implements GuiPanel {
 
     void onFocus() {
         updateLists()
-//        updateModel()
     }
 }
 
@@ -146,7 +148,7 @@ class WordStatusCellRenderer extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
     int row, int col) {
         if (value) {
-            toolTipText = "<html>Assigned: ${value.assignedDate?.format('MM/dd/yyyy') ?: ''}<br>Mastered: ${value.masteredDate?.format("MM/dd/yyyy") ?: ""}</html>"
+            toolTipText = "<html>Assigned: ${value?.assignedDate?.format('MM/dd/yyyy') ?: ''}<br>Mastered: ${value?.masteredDate?.format('MM/dd/yyyy') ?: ''}</html>"
         }
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col)
     }
