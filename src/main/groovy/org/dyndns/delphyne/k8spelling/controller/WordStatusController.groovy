@@ -23,7 +23,6 @@ class WordStatusController {
             }
             result.save()
         }
-        result
     }
 
     static WordStatus update(WordStatus status, WordState state) {
@@ -61,6 +60,7 @@ class WordStatusController {
         def assigned = []
         def unassigned = []
         def statuses = [:]
+        def results = []
         
         for (word in list.items) {
             WordStatus currentStatus = WordStatus.findByStudentAndWord(student, word)
@@ -87,14 +87,14 @@ class WordStatusController {
         toBeAssigned.each { Word word ->
             WordStatus status = statuses[word]
             if (status) {
-                update(status, WordState.Assigned)
+                results << update(status, WordState.Assigned)
             } else {
-                create(word, student, WordState.Assigned)
+                results << create(word, student, WordState.Assigned)
             }
         }
         
         toBeUnassigned.each { Word word ->
-            update(statuses[word], null)
+            results << update(statuses[word], null)
         }
     }
 }

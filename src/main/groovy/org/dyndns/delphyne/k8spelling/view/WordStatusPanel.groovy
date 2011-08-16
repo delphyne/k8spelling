@@ -41,18 +41,21 @@ class WordStatusPanel extends JPanel implements GuiPanel {
             action(id: 'onSelectionUpdate', closure: { updateModel() })
         }
 
-        swing.comboBox(id: "wordLists", items: [WordList.default]+ WordList.list(), action: swing.onSelectionUpdate)
-        swing.comboBox(id: "studentLists", items: [StudentList.default]+ StudentList.list(), action: swing.onSelectionUpdate)
+        swing.comboBox(id: 'wordLists', items: [WordList.default]+ WordList.list(), action: swing.onSelectionUpdate)
+        swing.comboBox(id: 'studentLists', items: [StudentList.default]+ StudentList.list(), action: swing.onSelectionUpdate)
 
-        swing.panel(id: "wordStatusPanel", constraints: BorderLayout.CENTER) {
+        swing.panel(id: 'wordStatusPanel', constraints: BorderLayout.CENTER) {
             borderLayout()
 
             panel(constraints: BorderLayout.NORTH) {
                 hbox {
-                    label(text: "Words:", labelFor: wordLists)
+                    label(text: 'Words:', labelFor: wordLists)
                     widget(wordLists)
-                    label(text: "Students:", labelFor: studentLists)
+                    label(text: 'Students:', labelFor: studentLists)
                     widget(studentLists)
+                    hstrut()
+                    button(id: 'Auto-Assign')
+                    hglue()
                 }
             }
 
@@ -148,7 +151,7 @@ class WordStatusCellRenderer extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
     int row, int col) {
         if (value) {
-            toolTipText = "<html>Assigned: ${value?.assignedDate?.format('MM/dd/yyyy') ?: ''}<br>Mastered: ${value?.masteredDate?.format('MM/dd/yyyy') ?: ''}</html>"
+            toolTipText = "<html><em>${value?.word ?: ''}</em><br/>Assigned: ${value?.assignedDate?.format('MM/dd/yyyy') ?: ''}<br/>Mastered: ${value?.masteredDate?.format('MM/dd/yyyy') ?: ''}</html>"
         }
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col)
     }
