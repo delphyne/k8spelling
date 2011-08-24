@@ -1,8 +1,8 @@
 syntax: glob
 .gradle
-build
 .classpath
 .project
 .settings
 bin/
+build/
 .DS_Store

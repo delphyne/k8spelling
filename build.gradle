@@ -11,8 +11,6 @@ repositories {
 }
 
 dependencies {
-/*    all*.exclude(group: 'org.codehaus.groovy:groovy-all')*/
-    
     groovy('org.codehaus.groovy:groovy:1.8.1')
     
     compile('org.springframework:spring-core:3.0.5.RELEASE')
