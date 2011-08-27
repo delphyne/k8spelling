@@ -79,7 +79,7 @@ class WordStatusController {
         def toBeAssigned = []
         def toBeUnassigned = []
         if (assigned.size() < numWordsToAssign && unassigned.size() > 0) {
-            toBeAssigned.addAll(unassigned[0..(Math.min(numWordsToAssign - assigned.size(), unassigned.size()))])
+            toBeAssigned.addAll(unassigned[0..(Math.min(numWordsToAssign - assigned.size(), unassigned.size()) - 1)])
         } else if (assigned.size() > numWordsToAssign) {
             toBeUnassigned.addAll(assigned[(numWordsToAssign)..-1])
         }
