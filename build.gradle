@@ -1,5 +1,5 @@
-apply(plugin:'groovy')
-apply(plugin:'eclipse')
+apply(plugin: 'groovy')
+apply(plugin: 'eclipse')
 
 group='org.dyndns.delphyne'
 version='1.0.0-SNAPSHOT'
@@ -10,26 +10,23 @@ repositories {
     mavenRepo(urls:['http://download.java.net/maven/2/', 'http://repo.grails.org/grails/core'])
 }
 
+configurations {
+    all*.exclude(module: 'groovy-all')
+}
+
 dependencies {
     groovy('org.codehaus.groovy:groovy:1.8.1')
     
-    compile('org.springframework:spring-core:3.0.5.RELEASE')
+    compile([
+        'org.springframework:spring-core:3.0.5.RELEASE',
+        'org.grails:grails-bootstrap:1.3.7',
+        'org.grails:grails-gorm:1.3.7',
+        'log4j:log4j:1.2.16',
+        'org.slf4j:slf4j-api:1.5.11',
+        'org.slf4j:slf4j-log4j12:1.5.11',
+        'com.h2database:h2:1.3.154',
+        'javax.servlet:servlet-api:2.5'
+        ])
     
-    compile('org.grails:grails-bootstrap:1.3.7') {
-        exclude(module: 'groovy-all')
-    }
-    compile('org.grails:grails-gorm:1.3.7') {
-        exclude(module: 'groovy-all')
-    }
-        
-    compile('log4j:log4j:1.2.16')
-    compile('org.slf4j:slf4j-api:1.5.11')
-    compile('org.slf4j:slf4j-log4j12:1.5.11')
-    
-    compile('com.h2database:h2:1.3.154')
-    
-    compile('javax.servlet:servlet-api:2.5')
-    
-    testCompile('junit:junit:4.8.2')
-    testCompile('org.uispec4j:uispec4j:2.4')
+    testCompile(['junit:junit:4.8.2', 'org.uispec4j:uispec4j:2.4'])
 }

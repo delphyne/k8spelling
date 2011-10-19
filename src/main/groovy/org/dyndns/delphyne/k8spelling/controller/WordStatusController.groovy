@@ -1,12 +1,12 @@
 package org.dyndns.delphyne.k8spelling.controller
 
+import groovy.util.logging.Log4j
+
 import org.dyndns.delphyne.k8spelling.model.Student
 import org.dyndns.delphyne.k8spelling.model.Word
 import org.dyndns.delphyne.k8spelling.model.WordList
 import org.dyndns.delphyne.k8spelling.model.WordState
 import org.dyndns.delphyne.k8spelling.model.WordStatus
-
-import groovy.util.logging.Log4j
 
 @Log4j
 class WordStatusController {
@@ -61,7 +61,7 @@ class WordStatusController {
         def unassigned = []
         def statuses = [:]
         def results = []
-        
+
         for (word in list.items) {
             WordStatus currentStatus = WordStatus.findByStudentAndWord(student, word)
             if (currentStatus) {
@@ -75,16 +75,8 @@ class WordStatusController {
                 unassigned << word
             }
         }
-        
-        def toBeAssigned = []
-        def toBeUnassigned = []
-        if (assigned.size() < numWordsToAssign && unassigned.size() > 0) {
-            toBeAssigned.addAll(unassigned[0..(Math.min(numWordsToAssign - assigned.size(), unassigned.size()) - 1)])
-        } else if (assigned.size() > numWordsToAssign) {
-            toBeUnassigned.addAll(assigned[(numWordsToAssign)..-1])
-        }
-        
-        toBeAssigned.each { Word word ->
+
+        unassigned.take(10).each { Word word ->
             WordStatus status = statuses[word]
             if (status) {
                 results << update(status, WordState.Assigned)
@@ -92,8 +84,8 @@ class WordStatusController {
                 results << create(word, student, WordState.Assigned)
             }
         }
-        
-        toBeUnassigned.each { Word word ->
+
+        assigned.drop(10).each { Word word ->
             results << update(statuses[word], null)
         }
     }

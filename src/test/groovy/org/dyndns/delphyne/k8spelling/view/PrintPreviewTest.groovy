@@ -4,6 +4,8 @@ import org.dyndns.delphyne.k8spelling.print.PrintPreview
 
 class PrintPreviewTest {
     static void main(String[] args) {
-        new PrintPreview()
+        def pp = new PrintPreview()
+        pp.pack()
+        pp.visible = true
     }
 }
