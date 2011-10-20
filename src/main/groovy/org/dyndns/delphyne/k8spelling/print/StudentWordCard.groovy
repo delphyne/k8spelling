@@ -43,8 +43,20 @@ class StudentWordCard extends JPanel {
         drawStudentName(g)
 
         // TODO: this needs to interrogate the wordlist...
-        WordStatus.findByStudentAndState(student, WordState.Assigned).eachWithIndex { Word word, int index ->
-            drawWord(g, word, index)
+//        WordStatus.findByStudentAndState(student, WordState.Assigned).eachWithIndex { WordStatus wordStatus, int index ->
+//            drawWord(g, wordStatus.word, index)
+//        }
+        
+        words.items.findAll { Word word ->
+            WordStatus.withCriteria {
+                and {
+                    eq('word', word)
+                    eq('student', student)
+                    eq('state', WordState.Assigned)
+                }
+            }
+        }.eachWithIndex { WordStatus status, int index ->
+            drawWord(g, status.word, index)
         }
 
         g.drawLine(0 + 36, height - 1, width - 72, height - 1)

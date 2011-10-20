@@ -14,7 +14,7 @@ class StudentWordCardTest {
     
     static void main(String[] args) {
         WordStatus.metaClass.static.findByStudentAndState << { Student student, WordState state ->
-            ['who', 'what', 'when', 'where', 'why', 'how', 'a', 'an', 'then', 'the'].collect { new Word(data: it) }
+            ['who', 'what', 'when', 'where', 'why', 'how', 'a', 'an', 'then', 'the'].collect { new WordStatus(word: new Word(data: it), student: student, state: state) }
         }
         
         Student s = new Student(data: "Jackson")
