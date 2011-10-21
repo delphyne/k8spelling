@@ -1,11 +1,10 @@
 package org.dyndns.delphyne.k8spelling.print
 
-import java.awt.Color
+import groovy.util.logging.Log4j
+
 import java.awt.Font
 import java.awt.Graphics
 import java.awt.RenderingHints
-
-import javax.swing.JPanel
 
 import org.dyndns.delphyne.k8spelling.model.Student
 import org.dyndns.delphyne.k8spelling.model.StudentList
@@ -14,7 +13,8 @@ import org.dyndns.delphyne.k8spelling.model.WordList
 import org.dyndns.delphyne.k8spelling.model.WordState
 import org.dyndns.delphyne.k8spelling.model.WordStatus
 
-class TeacherSummaryPage extends JPanel {
+@Log4j
+class TeacherSummaryPage {
     StudentList students
     WordList words
 
@@ -26,21 +26,17 @@ class TeacherSummaryPage extends JPanel {
     Font studentFont = new Font('Helvetica', Font.BOLD, 12)
     Font wordFont = new Font('Helvetica', Font.PLAIN, 12)
 
-    TeacherSummaryPage() {
-        super()
-        background = Color.WHITE
-    }
-
-    void paintComponent(Graphics g) {
-        super.paintComponent(g)
+    void paint(Graphics g) {
+        log.trace 'painting teacher summary page'
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
 
         g.font = headerFont
         g.drawString("${students} / ${words} (${new Date().format('MMMMM d, yyyy')})", DPI * 0.5, DPI * 0.5)
 
+        log.trace 'finding words assigned to students'
         students.items.eachWithIndex { Student student, int i ->
-            int voff = DPI + 0.3 * DPI * i
+            int voff = DPI + 0.275 * DPI * i
             List assignedWords = words.items.findAll { Word word ->
                 WordStatus.withCriteria {
                     and {

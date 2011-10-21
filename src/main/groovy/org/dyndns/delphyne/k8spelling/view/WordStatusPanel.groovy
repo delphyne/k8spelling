@@ -1,5 +1,8 @@
 package org.dyndns.delphyne.k8spelling.view
 
+import groovy.swing.SwingBuilder
+import groovy.util.logging.Log4j
+
 import java.awt.BorderLayout
 import java.awt.Component
 
@@ -20,8 +23,6 @@ import org.dyndns.delphyne.k8spelling.model.WordState
 import org.dyndns.delphyne.k8spelling.model.WordStatus
 
 import darrylbu.renderer.VerticalTableHeaderCellRenderer
-import groovy.swing.SwingBuilder
-import groovy.util.logging.Log4j
 
 @Log4j
 class WordStatusPanel extends JPanel implements GuiPanel {
@@ -29,7 +30,7 @@ class WordStatusPanel extends JPanel implements GuiPanel {
     Component defaultFocus
     JButton defaultButton
 
-    private SwingBuilder swing
+    SwingBuilder swing
 
     WordStatusPanel(StatusPanel status) {
         super(new BorderLayout())
@@ -93,13 +94,13 @@ class WordStatusPanel extends JPanel implements GuiPanel {
             }
         }
     }
-    
+
     void autoAssign() {
         swing.doLater {
             swing.studentLists.selectedItem.items.each { Student student ->
                 WordStatusController.autoAssign(student, swing.wordLists.selectedItem)
             }
-            
+
             updateModel()
         }
     }

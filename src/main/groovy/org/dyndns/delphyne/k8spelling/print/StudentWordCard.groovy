@@ -2,14 +2,10 @@ package org.dyndns.delphyne.k8spelling.print
 
 import groovy.util.logging.Slf4j
 
-import java.awt.Color
-import java.awt.Dimension
 import java.awt.Font
 import java.awt.FontMetrics
 import java.awt.Graphics
 import java.awt.RenderingHints
-
-import javax.swing.JPanel
 
 import org.dyndns.delphyne.k8spelling.model.Student
 import org.dyndns.delphyne.k8spelling.model.Word
@@ -18,35 +14,26 @@ import org.dyndns.delphyne.k8spelling.model.WordState
 import org.dyndns.delphyne.k8spelling.model.WordStatus
 
 @Slf4j
-class StudentWordCard extends JPanel {
+class StudentWordCard {
 
     Student student
     WordList words
+    int index // which position on the page is this card, 0-4
 
     final static Font headerFont = new Font('Helvetica', Font.PLAIN, 24)
     final static Font wordFont = headerFont.deriveFont(16)
 
-    final static int WIDTH = 72 * 8.5
-    final static int HEIGHT = 72 * 11 / 4
-    final static Dimension DIMENSION = new Dimension(WIDTH, HEIGHT)
+    final static int width = 72 * 8.5
+    final static int height = 72 * 10.25 / 4
 
-    StudentWordCard() {
-        super()
-        background = Color.WHITE
-    }
-
-    void paintComponent(Graphics g) {
-        super.paintComponent(g)
+    void paint(Graphics g) {
+        log.trace 'painting'
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
 
         drawStudentName(g)
 
-        // TODO: this needs to interrogate the wordlist...
-//        WordStatus.findByStudentAndState(student, WordState.Assigned).eachWithIndex { WordStatus wordStatus, int index ->
-//            drawWord(g, wordStatus.word, index)
-//        }
-        
+        log.trace 'finding words for student'
         words.items.findAll { Word word ->
             WordStatus.withCriteria {
                 and {
@@ -55,11 +42,12 @@ class StudentWordCard extends JPanel {
                     eq('state', WordState.Assigned)
                 }
             }
-        }.eachWithIndex { WordStatus status, int index ->
-            drawWord(g, status.word, index)
+        }.eachWithIndex { Word word, int index ->
+            log.trace word.toString()
+            drawWord(g, word, index)
         }
 
-        g.drawLine(0 + 36, height - 1, width - 72, height - 1)
+        g.drawLine(0 + 36, adjustVerticalOffsetForIndex(height - 1), width - 72, adjustVerticalOffsetForIndex(height - 1))
     }
 
     private void drawStudentName(Graphics g) {
@@ -82,8 +70,11 @@ class StudentWordCard extends JPanel {
         int strWidth = fm.stringWidth(str)
         int leftEdge = axis - strWidth / 2
 
-
         log.trace "${str} [axis: $axis, offset: $verticalOffset, leftEdge: $leftEdge]"
-        g.drawString(str, leftEdge, verticalOffset)
+        g.drawString(str, leftEdge, adjustVerticalOffsetForIndex(verticalOffset))
+    }
+
+    private int adjustVerticalOffsetForIndex(int verticalOffset) {
+        verticalOffset + (index * height)
     }
 }

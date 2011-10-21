@@ -1,5 +1,7 @@
 package org.dyndns.delphyne.k8spelling.view
 
+import groovy.swing.SwingBuilder
+
 import java.awt.BorderLayout
 
 import javax.swing.JFrame
@@ -11,8 +13,7 @@ import org.dyndns.delphyne.k8spelling.model.Student
 import org.dyndns.delphyne.k8spelling.model.StudentList
 import org.dyndns.delphyne.k8spelling.model.Word
 import org.dyndns.delphyne.k8spelling.model.WordList
-
-import groovy.swing.SwingBuilder
+import org.dyndns.delphyne.k8spelling.print.Printer
 
 class MainWindow {
     SwingBuilder swing = new SwingBuilder()
@@ -21,9 +22,13 @@ class MainWindow {
         swing.frame(id: "mainWindow", title: "k8spelling", defaultCloseOperation: JFrame.DISPOSE_ON_CLOSE, size: [640, 480], show: true) {
             menuBar {
                 menu(text: "File", mnemonic: 'F') {
-                    menuItem(text: "Import", mnemonic: 'I', actionPerformed: {})
-                    menuItem(text: "Export", mnemonic: 'E', actionPerformed: {})
-                    menuItem(text: "Print", mnemonic: 'P', actionPerformed: {})
+//                    menuItem(text: "Import", mnemonic: 'I', actionPerformed: {})
+//                    menuItem(text: "Export", mnemonic: 'E', actionPerformed: {})
+                    menuItem(text: "Print", mnemonic: 'P', actionPerformed: {
+                            swing.wordStatusPanel.swing.with {
+                                new Printer(studentLists.selectedItem, wordLists.selectedItem).print()
+                            }
+                        })
                     menuItem(text: "Quit", mnemonic: 'Q', , actionPerformed: { mainWindow.dispose() })
                 }
                 menu(text: "Help", mnemonic: 'H') {
