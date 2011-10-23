@@ -24,36 +24,30 @@ class Printer implements Printable {
 
     int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         try {
-        log.trace "print requested, page $pageIndex"
-        if (pageIndex >= Math.ceil(students.items.size() / 4)) {
-            log.info 'NO_SUCH_PAGE'
-            NO_SUCH_PAGE
-        } else {
-            log.trace "in else"
-            def currentPage
-
-            if (pageIndex == 0) {
-                log.trace 'setting current page to summary'
-                currentPage = new TeacherSummaryPage(students: students, words: words)
+            log.trace "print requested, page $pageIndex"
+            if (pageIndex > Math.ceil(students.items.size() / 4)) {
+                log.trace 'NO_SUCH_PAGE'
+                NO_SUCH_PAGE
             } else {
-                int wcIndex = pageIndex - 1
-                log.trace "setting current page to student word card page $wcIndex"
-                currentPage = new StudentWordCardPage(students: students, words: words, page: wcIndex)
-            }
+                def currentPage
 
-            graphics.translate(pageFormat.imageableX, pageFormat.imageableY)
-            log.info 'before paint'
-            try {
+                if (pageIndex == 0) {
+                    log.debug 'setting current page to summary'
+                    currentPage = new TeacherSummaryPage(students: students, words: words)
+                } else {
+                    int wcIndex = pageIndex - 1
+                    log.debug "setting current page to student word card page $wcIndex"
+                    currentPage = new StudentWordCardPage(students: students, words: words, page: wcIndex)
+                }
+
+                graphics.translate(pageFormat.imageableX, pageFormat.imageableY)
+                log.debug "rendering page of type ${currentPage.class.simpleName}"
                 currentPage.paint(graphics)
-            } catch (ex) {
-                log.error '', ex
+                log.trace 'PAGE_EXISTS'
+                PAGE_EXISTS
             }
-
-            log.info 'after paint'
-            PAGE_EXISTS
-        }
         } catch (ex) {
-        log.error '', ex
+            log.error '', ex
         }
     }
 

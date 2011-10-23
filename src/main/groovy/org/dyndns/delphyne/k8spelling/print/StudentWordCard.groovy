@@ -18,7 +18,7 @@ class StudentWordCard {
 
     Student student
     WordList words
-    int index // which position on the page is this card, 0-4
+    int index
 
     final static Font headerFont = new Font('Helvetica', Font.PLAIN, 24)
     final static Font wordFont = headerFont.deriveFont(16)
@@ -27,13 +27,11 @@ class StudentWordCard {
     final static int height = 72 * 10.25 / 4
 
     void paint(Graphics g) {
-        log.trace 'painting'
-
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
 
         drawStudentName(g)
 
-        log.trace 'finding words for student'
+        log.debug "Find words from $words assigned to $student"
         words.items.findAll { Word word ->
             WordStatus.withCriteria {
                 and {
@@ -43,7 +41,6 @@ class StudentWordCard {
                 }
             }
         }.eachWithIndex { Word word, int index ->
-            log.trace word.toString()
             drawWord(g, word, index)
         }
 

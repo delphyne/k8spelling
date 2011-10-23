@@ -1,8 +1,13 @@
 apply(plugin: 'groovy')
+apply(plugin: 'application')
 apply(plugin: 'eclipse')
 
+
 group='org.dyndns.delphyne'
-version='1.0.0-SNAPSHOT'
+version='1.0.0'
+
+applicationName='k8spelling'
+mainClassName='org.dyndns.delphyne.k8spelling.Main'
 
 repositories {
     mavenLocal()

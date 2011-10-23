@@ -27,16 +27,14 @@ class TeacherSummaryPage {
     Font wordFont = new Font('Helvetica', Font.PLAIN, 12)
 
     void paint(Graphics g) {
-        log.trace 'painting teacher summary page'
-
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
 
         g.font = headerFont
         g.drawString("${students} / ${words} (${new Date().format('MMMMM d, yyyy')})", DPI * 0.5, DPI * 0.5)
 
-        log.trace 'finding words assigned to students'
         students.items.eachWithIndex { Student student, int i ->
             int voff = DPI + 0.275 * DPI * i
+            log.debug "finding words from $words assigned to $student"
             List assignedWords = words.items.findAll { Word word ->
                 WordStatus.withCriteria {
                     and {

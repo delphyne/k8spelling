@@ -20,12 +20,10 @@ class StudentWordCardPage {
     int page
 
     void paint(Graphics graphics) {
-        students.items.drop(page * 4).take(4).eachWithIndex { Student student, int index ->
-            log.trace "printing word card for $student"
-            def swc = new StudentWordCard(student: student, words: words, index: index)
-            swc.paint(graphics)
+        def studentsForThisPage = students.items.drop(page * 4).take(4)
+        log.debug "Rendering page for $studentsForThisPage"
+        studentsForThisPage.eachWithIndex { Student student, int index ->
+            new StudentWordCard(student: student, words: words, index: index).paint(graphics)
         }
 	}
-
-    void foo() { apple.awt.CPrinterGraphics }
 }
