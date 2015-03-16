@@ -1,0 +1,1 @@
+Tracks a student's progress through mastery of pre-defined vocabulary lists.
